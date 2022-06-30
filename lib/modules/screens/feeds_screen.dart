@@ -1,57 +1,86 @@
+import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/constant/style/color.dart';
 import 'package:social_app/constant/style/icon_broken.dart';
+import 'package:social_app/models/post_model.dart';
+import 'package:social_app/modules/screens/Layout/cubit/layout_cubit.dart';
+import 'package:social_app/modules/screens/Layout/cubit/layout_state.dart';
 
 class FeedsScreen extends StatelessWidget {
   const FeedsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          Card(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            elevation: 10.0,
-            margin: const EdgeInsets.all(8.0),
-            child: Stack(
-              alignment: AlignmentDirectional.bottomEnd,
+    return BlocConsumer<SocialCubit, SocialStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        // vaarible for cubit
+        var cubit = SocialCubit.get(context);
+
+        return ConditionalBuilder(
+          condition: cubit.posts.isNotEmpty,
+          builder: (context) => SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
               children: [
-                const Image(
-                  image: NetworkImage(
-                      'https://i.pinimg.com/564x/22/95/1d/22951db4c4a6b4bbecd4a491ba23394d.jpg'),
-                  fit: BoxFit.cover,
-                  height: 150.0,
-                  width: double.infinity,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Commmictaa flose sdffwe sdfasdasd',
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Colors.white,
+                Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  elevation: 10.0,
+                  margin: const EdgeInsets.all(8.0),
+                  child: Stack(
+                    alignment: AlignmentDirectional.bottomEnd,
+                    children: [
+                      const Image(
+                        image: NetworkImage(
+                            'https://i.pinimg.com/564x/22/95/1d/22951db4c4a6b4bbecd4a491ba23394d.jpg'),
+                        fit: BoxFit.cover,
+                        height: 150.0,
+                        width: double.infinity,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Commmictaa flose sdffwe sdfasdasd',
+                          style:
+                              Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    color: Colors.white,
+                                  ),
                         ),
+                      ),
+                    ],
                   ),
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return builtPostItem(
+                      cubit.posts[index],
+                      context,
+                      index,
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 8.0),
+                  itemCount: cubit.posts.length,
                 ),
               ],
             ),
           ),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return builtPostItem(context);
-            },
-            separatorBuilder: (context, index) => const SizedBox(height: 8.0),
-            itemCount: 15,
+          fallback: (context) => const Center(
+            child: CircularProgressIndicator(),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget builtPostItem(BuildContext context) {
+  Widget builtPostItem(
+    PostModel model,
+    BuildContext context,
+    index,
+  ) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 5.0,
@@ -63,10 +92,11 @@ class FeedsScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 20.0,
                   backgroundImage: NetworkImage(
-                      'https://i.pinimg.com/564x/af/7a/1a/af7a1ac8729932ec8f8dccfcb3288fa0.jpg'),
+                    '${model.image}',
+                  ),
                 ),
                 const SizedBox(width: 20.0),
                 Expanded(
@@ -74,16 +104,16 @@ class FeedsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        children: const [
+                        children: [
                           Text(
-                            'Abdulrahman ',
-                            style: TextStyle(
+                            '${model.name} ',
+                            style: const TextStyle(
                               height: 1.4,
                               fontSize: 16.0,
                             ),
                           ),
-                          SizedBox(width: 7.0),
-                          Icon(
+                          const SizedBox(width: 7.0),
+                          const Icon(
                             Icons.check_circle,
                             color: defaultColor,
                             size: 14.0,
@@ -91,7 +121,7 @@ class FeedsScreen extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        'Abdulrahman hhsdfasfiweef',
+                        '${model.dateTime}',
                         style: Theme.of(context)
                             .textTheme
                             .caption!
@@ -117,89 +147,92 @@ class FeedsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isnt anything embarrassing hidden in the middle of text.',
+              '${model.text}',
               style: Theme.of(context).textTheme.subtitle1,
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Container(
-                width: double.infinity,
-                child: Wrap(
-                  children: [
-                    // الهشتاج
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        end: 7.0,
-                      ),
-                      child: Container(
-                        height: 20.0,
-                        child: MaterialButton(
-                          minWidth: 1.0,
-                          padding: EdgeInsets.zero,
-                          onPressed: () {},
-                          child: Text(
-                            '#softwar',
-                            style: TextStyle(
-                              color: Colors.blue[600],
-                            ),
-                          ),
-                        ),
-                      ),
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 10.0),
+            //   child: Container(
+            //     width: double.infinity,
+            //     child: Wrap(
+            //       children: [
+            //         // الهشتاج
+            //         Padding(
+            //           padding: const EdgeInsetsDirectional.only(
+            //             end: 7.0,
+            //           ),
+            //           child: Container(
+            //             height: 20.0,
+            //             child: MaterialButton(
+            //               minWidth: 1.0,
+            //               padding: EdgeInsets.zero,
+            //               onPressed: () {},
+            //               child: Text(
+            //                 '#softwar',
+            //                 style: TextStyle(
+            //                   color: Colors.blue[600],
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //         Padding(
+            //           padding: const EdgeInsetsDirectional.only(
+            //             end: 7.0,
+            //           ),
+            //           child: Container(
+            //             height: 20.0,
+            //             child: MaterialButton(
+            //               minWidth: 1.0,
+            //               padding: EdgeInsets.zero,
+            //               onPressed: () {},
+            //               child: Text(
+            //                 '#softwar',
+            //                 style: TextStyle(
+            //                   color: Colors.blue[600],
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //         Padding(
+            //           padding: const EdgeInsetsDirectional.only(
+            //             end: 7.0,
+            //           ),
+            //           child: Container(
+            //             height: 20.0,
+            //             child: MaterialButton(
+            //               minWidth: 1.0,
+            //               padding: EdgeInsets.zero,
+            //               onPressed: () {},
+            //               child: Text(
+            //                 '#softwar',
+            //                 style: TextStyle(
+            //                   color: Colors.blue[600],
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            if (model.postImage != '')
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Container(
+                  height: 150.0,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    image: DecorationImage(
+                      image: NetworkImage('${model.postImage}'),
+                      fit: BoxFit.cover,
                     ),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        end: 7.0,
-                      ),
-                      child: Container(
-                        height: 20.0,
-                        child: MaterialButton(
-                          minWidth: 1.0,
-                          padding: EdgeInsets.zero,
-                          onPressed: () {},
-                          child: Text(
-                            '#softwar',
-                            style: TextStyle(
-                              color: Colors.blue[600],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        end: 7.0,
-                      ),
-                      child: Container(
-                        height: 20.0,
-                        child: MaterialButton(
-                          minWidth: 1.0,
-                          padding: EdgeInsets.zero,
-                          onPressed: () {},
-                          child: Text(
-                            '#softwar',
-                            style: TextStyle(
-                              color: Colors.blue[600],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            Container(
-              height: 150.0,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.0),
-                image: const DecorationImage(
-                  image: NetworkImage(
-                      'https://i.pinimg.com/564x/49/cb/e2/49cbe24f4e7ee3321aac1e40011303d6.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: Row(
@@ -218,7 +251,7 @@ class FeedsScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: 10.0),
                             Text(
-                              '1234',
+                              '${SocialCubit.get(context).likes[index]}',
                               style: Theme.of(context).textTheme.caption,
                             ),
                           ],
@@ -241,7 +274,7 @@ class FeedsScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: 10.0),
                             Text(
-                              '12o commint ',
+                              '${SocialCubit.get(context).comments[index]} comment',
                               style: Theme.of(context).textTheme.caption,
                             ),
                           ],
@@ -268,13 +301,17 @@ class FeedsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      SocialCubit.get(context).commentPosts(
+                          SocialCubit.get(context).postsId[index]);
+                    },
                     child: Row(
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 15.0,
                           backgroundImage: NetworkImage(
-                              'https://i.pinimg.com/564x/af/7a/1a/af7a1ac8729932ec8f8dccfcb3288fa0.jpg'),
+                            '${SocialCubit.get(context).userModel!.image}',
+                          ),
                         ),
                         const SizedBox(width: 20.0),
                         Text(
@@ -288,7 +325,10 @@ class FeedsScreen extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    SocialCubit.get(context)
+                        .likePosts(SocialCubit.get(context).postsId[index]);
+                  },
                   child: Row(
                     children: [
                       const Icon(
@@ -297,7 +337,7 @@ class FeedsScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10.0),
                       Text(
-                        '1234',
+                        'Like',
                         style: Theme.of(context).textTheme.caption,
                       ),
                     ],

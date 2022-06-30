@@ -88,3 +88,14 @@ Widget defaultButton({
     ),
   );
 }
+
+Widget defaultDivider() {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 15.0),
+    child: Container(
+      width: double.infinity,
+      height: 1.3,
+      color: Colors.grey[300],
+    ),
+  );
+}
