@@ -7,8 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:social_app/constant/const.dart';
 import 'package:social_app/models/post_model.dart';
 import 'package:social_app/models/soical_user_model.dart';
+import 'package:social_app/models/user/user_model.dart';
 import 'package:social_app/modules/screens/Layout/cubit/layout_state.dart';
-import 'package:social_app/modules/screens/chats_screen.dart';
+import 'package:social_app/modules/screens/chat/chats_screen.dart';
 import 'package:social_app/modules/screens/feeds_screen.dart';
 import 'package:social_app/modules/screens/new_post_screen.dart';
 import 'package:social_app/modules/screens/settings_screen.dart';
@@ -54,6 +55,9 @@ class SocialCubit extends Cubit<SocialStates> {
     'Setting',
   ];
   void changeBottomNav(int index) {
+    if (index == 1) {
+      getUsers();
+    }
     if (index == 2) {
       emit(SocialNewPostNavState());
     } else {
@@ -269,5 +273,75 @@ class SocialCubit extends Cubit<SocialStates> {
     }).catchError((error) {
       emit(SocialCreatePostErrorState());
     });
+  }
+
+  // to get posts from firebase
+  List<PostModel> posts = [];
+  List<String> postsId = [];
+  List<int> likes = [];
+  List<int> comments = [];
+  void getPosts() {
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
+      emit(SocialGetPostsSuccessState());
+      value.docs.forEach((element) {
+        element.reference.collection('likes').get().then((value) {
+          likes.add(value.docs.length);
+          comments.add(value.docs.length);
+          postsId.add(element.id);
+          posts.add(PostModel.fromJson(element.data()));
+        }).catchError((error) {});
+      });
+    }).catchError((error) {
+      emit(SocialGetPostsErrorState(error.toString()));
+    });
+  }
+
+  // to make a like in the post
+
+  void likePosts(String postId) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('likes')
+        .doc(userModel!.uid)
+        .set({'like': true}).then((value) {
+      emit(SocialLikePostsSuccessState());
+    }).catchError((error) {
+      emit(SocialLikePostsErrorState(error.toString()));
+    });
+  }
+
+  // to comment in the post
+  void commentPosts(String postId) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .doc(userModel!.uid)
+        .set({
+      'comment': 'my comment',
+    }).then((value) {
+      emit(SocialCommentPostsSuccessState());
+    }).catchError((error) {
+      emit(SocialCommentPostsErrorState(error.toString()));
+    });
+  }
+
+  // to get all user in chat screen
+
+  List<SocialUserModel> users = [];
+  void getUsers() {
+    if (users.length == 0) {
+      FirebaseFirestore.instance.collection('users').get().then((value) {
+        emit(SocialGetAllUsersSuccessState());
+        value.docs.forEach((element) {
+          if (element.data()['uid'] != userModel!.uid) {
+            users.add(SocialUserModel.fromJson(element.data()));
+          }
+        });
+      }).catchError((error) {
+        emit(SocialGetAllUsersErrorState(error.toString()));
+      });
+    }
   }
 }

@@ -11,6 +11,46 @@ class SocialGetUserErrorState extends SocialStates {
   SocialGetUserErrorState(this.error);
 }
 
+// to get all users
+
+class SocialGetAllUsersLoadingState extends SocialStates {}
+
+class SocialGetAllUsersSuccessState extends SocialStates {}
+
+class SocialGetAllUsersErrorState extends SocialStates {
+  final String error;
+  SocialGetAllUsersErrorState(this.error);
+}
+
+// for get posts
+
+class SocialGetPostsLoadingState extends SocialStates {}
+
+class SocialGetPostsSuccessState extends SocialStates {}
+
+class SocialGetPostsErrorState extends SocialStates {
+  final String error;
+  SocialGetPostsErrorState(this.error);
+}
+
+// state for likes
+
+class SocialLikePostsSuccessState extends SocialStates {}
+
+class SocialLikePostsErrorState extends SocialStates {
+  final String error;
+  SocialLikePostsErrorState(this.error);
+}
+
+// state for Comment
+
+class SocialCommentPostsSuccessState extends SocialStates {}
+
+class SocialCommentPostsErrorState extends SocialStates {
+  final String error;
+  SocialCommentPostsErrorState(this.error);
+}
+
 class SocialChangeBottomNavState extends SocialStates {}
 
 class SocialNewPostNavState extends SocialStates {}

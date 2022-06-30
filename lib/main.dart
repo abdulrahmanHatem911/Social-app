@@ -38,10 +38,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       // the provider
-      // and get data from firbase
+      // and get data from firebase and get the data about posts
       providers: [
         BlocProvider(
-          create: (BuildContext context) => SocialCubit()..getUserDate(),
+          create: (BuildContext context) => SocialCubit()
+            ..getUserDate()
+            ..getPosts(),
         ),
       ],
       child: BlocConsumer<SocialCubit, SocialStates>(
