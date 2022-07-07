@@ -24,12 +24,16 @@ class SocilaLayout extends StatelessWidget {
           appBar: AppBar(
             actions: [
               IconButton(
-                onPressed: () {},
-                icon: const Icon(IconBroken.Notification),
+                onPressed: () {
+                  cubit.changeAppMode();
+                },
+                icon: const Icon(Icons.mode_night_outlined),
               ),
               IconButton(
-                onPressed: () {},
-                icon: const Icon(IconBroken.Search),
+                onPressed: () {
+                  cubit.userLoginOut(context);
+                },
+                icon: const Icon(IconBroken.Logout),
               ),
             ],
             title: Text(

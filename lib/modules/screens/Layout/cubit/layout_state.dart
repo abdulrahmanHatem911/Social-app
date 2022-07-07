@@ -93,3 +93,25 @@ class SocialPostImagePickedSuccessState extends SocialStates {}
 class SocialPostImagePickedErrorState extends SocialStates {}
 
 class SocialPostImagePickedRemoveState extends SocialStates {}
+
+// for chat
+// send Message
+
+class SocialSendMessageSuccessState extends SocialStates {}
+
+class SocialSendMessageErrorState extends SocialStates {}
+
+// get message
+
+class SocialGetMessageSuccessState extends SocialStates {}
+
+class SocialGetMessageErrorState extends SocialStates {}
+
+// for login out from application
+class SocialLoginOutSuccessState extends SocialStates {}
+
+class SocialLoginOutErrorState extends SocialStates {}
+
+// to change the theme of application
+
+class SocialChangeModeState extends SocialStates {}

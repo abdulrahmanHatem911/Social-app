@@ -29,21 +29,26 @@ ThemeData darkTheme = ThemeData(
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,
     selectedItemColor: defaultColor,
-    unselectedItemColor: Colors.grey,
+    unselectedItemColor: Colors.white,
     elevation: 20.0,
     backgroundColor: HexColor('333739'),
   ),
-  textTheme: const TextTheme(
-    bodyText1: TextStyle(
+  textTheme: TextTheme(
+    bodyText1: const TextStyle(
       fontSize: 18.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
     ),
-    subtitle1: TextStyle(
+    subtitle1: const TextStyle(
       fontSize: 14.0,
       fontWeight: FontWeight.w600,
       color: Colors.white,
       height: 1.1,
+    ),
+    subtitle2: TextStyle(
+      fontSize: 16.0,
+      color: Colors.grey.shade300,
+      height: 1.2,
     ),
   ),
   fontFamily: 'cairo',
@@ -79,17 +84,20 @@ ThemeData lightTheme = ThemeData(
     backgroundColor: Colors.white,
   ),
   textTheme: const TextTheme(
-    bodyText1: TextStyle(
-      fontSize: 18.0,
-      fontWeight: FontWeight.w600,
-      color: Colors.black,
-    ),
-    subtitle1: TextStyle(
-      fontSize: 16.0,
-      fontWeight: FontWeight.w600,
-      color: Colors.black,
-      height: 1.3,
-    ),
-  ),
+      bodyText1: TextStyle(
+        fontSize: 18.0,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+      ),
+      subtitle1: TextStyle(
+        fontSize: 16.0,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
+        height: 1.3,
+      ),
+      subtitle2: TextStyle(
+        fontSize: 16.0,
+        color: Colors.black,
+      )),
   fontFamily: 'cairo',
 );

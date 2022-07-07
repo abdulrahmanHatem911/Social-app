@@ -28,7 +28,7 @@ class EditProfileScreen extends StatelessWidget {
 
         nameController.text = userModel!.name;
         bioController.text = userModel.bio!;
-        phoneController.text = userModel.phone!;
+        phoneController.text = userModel.phone;
         return Scaffold(
           appBar: AppBar(
             titleSpacing: 5.0,

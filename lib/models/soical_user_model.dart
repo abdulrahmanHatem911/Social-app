@@ -4,7 +4,7 @@ class SocialUserModel {
   String? cover;
   String? email;
   String? bio;
-  String? phone;
+  late String phone;
   dynamic uid;
   bool? isEmailVerified = false;
   SocialUserModel({
@@ -13,7 +13,7 @@ class SocialUserModel {
     this.cover,
     this.email,
     this.bio,
-    this.phone,
+    required this.phone,
     this.uid,
     this.isEmailVerified,
   });

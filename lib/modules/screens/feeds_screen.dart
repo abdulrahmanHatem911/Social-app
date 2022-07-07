@@ -19,7 +19,7 @@ class FeedsScreen extends StatelessWidget {
         var cubit = SocialCubit.get(context);
 
         return ConditionalBuilder(
-          condition: cubit.posts.isNotEmpty,
+          condition: cubit.posts.length > 0 && cubit.userModel != null,
           builder: (context) => SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Column(
@@ -150,74 +150,6 @@ class FeedsScreen extends StatelessWidget {
               '${model.text}',
               style: Theme.of(context).textTheme.subtitle1,
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 10.0),
-            //   child: Container(
-            //     width: double.infinity,
-            //     child: Wrap(
-            //       children: [
-            //         // الهشتاج
-            //         Padding(
-            //           padding: const EdgeInsetsDirectional.only(
-            //             end: 7.0,
-            //           ),
-            //           child: Container(
-            //             height: 20.0,
-            //             child: MaterialButton(
-            //               minWidth: 1.0,
-            //               padding: EdgeInsets.zero,
-            //               onPressed: () {},
-            //               child: Text(
-            //                 '#softwar',
-            //                 style: TextStyle(
-            //                   color: Colors.blue[600],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //         Padding(
-            //           padding: const EdgeInsetsDirectional.only(
-            //             end: 7.0,
-            //           ),
-            //           child: Container(
-            //             height: 20.0,
-            //             child: MaterialButton(
-            //               minWidth: 1.0,
-            //               padding: EdgeInsets.zero,
-            //               onPressed: () {},
-            //               child: Text(
-            //                 '#softwar',
-            //                 style: TextStyle(
-            //                   color: Colors.blue[600],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //         Padding(
-            //           padding: const EdgeInsetsDirectional.only(
-            //             end: 7.0,
-            //           ),
-            //           child: Container(
-            //             height: 20.0,
-            //             child: MaterialButton(
-            //               minWidth: 1.0,
-            //               padding: EdgeInsets.zero,
-            //               onPressed: () {},
-            //               child: Text(
-            //                 '#softwar',
-            //                 style: TextStyle(
-            //                   color: Colors.blue[600],
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
             if (model.postImage != '')
               Padding(
                 padding: const EdgeInsets.only(top: 15.0),

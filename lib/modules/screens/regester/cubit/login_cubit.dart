@@ -16,6 +16,7 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
 // to create a new user in cloud firbase
 
   //SocialLoginModel? loginModel;
+
   // to register in firbase
   void userRegister({
     required String name,

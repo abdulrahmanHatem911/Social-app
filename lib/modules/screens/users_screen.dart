@@ -5,8 +5,13 @@ class UsersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Users'),
+    return Center(
+      child: Text(
+        'Users',
+        style: Theme.of(context).textTheme.subtitle1!.copyWith(
+              color: Colors.grey.shade300,
+            ),
+      ),
     );
   }
 }

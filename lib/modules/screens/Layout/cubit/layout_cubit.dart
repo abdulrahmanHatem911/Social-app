@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_app/constant/const.dart';
@@ -11,18 +13,23 @@ import 'package:social_app/models/user/user_model.dart';
 import 'package:social_app/modules/screens/Layout/cubit/layout_state.dart';
 import 'package:social_app/modules/screens/chat/chats_screen.dart';
 import 'package:social_app/modules/screens/feeds_screen.dart';
+import 'package:social_app/modules/screens/login/login_screen.dart';
 import 'package:social_app/modules/screens/new_post_screen.dart';
 import 'package:social_app/modules/screens/settings_screen.dart';
 import 'package:social_app/modules/screens/users_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import '../../../../constant/Network/Local/cash_helper.dart';
+import '../../../../models/messag/messge_model.dart';
 
 class SocialCubit extends Cubit<SocialStates> {
   SocialCubit() : super(SocialInitialState());
   static SocialCubit get(context) => BlocProvider.of(context);
   SocialUserModel? userModel;
 
-  // to get data from database in firbase
+  // to get data from database in firebase
   void getUserDate() {
+    uId = CacheHelper.getData(key: 'uId');
     emit(SocialGetUserLoadingState());
     FirebaseFirestore.instance.collection('users').doc(uId).get().then((value) {
       // to get date
@@ -64,6 +71,36 @@ class SocialCubit extends Cubit<SocialStates> {
       currentIndex = index;
       emit(SocialChangeBottomNavState());
     }
+  }
+// to change the theme
+
+  bool? isDark = true;
+
+  void changeAppMode({bool? fromShared}) {
+    if (fromShared != null) {
+      isDark = fromShared;
+      emit(SocialChangeModeState());
+    } else {
+      isDark = !isDark!;
+      CacheHelper.putBoolean(key: 'isDark', value: isDark!).then((value) {
+        emit(SocialChangeModeState());
+      });
+    }
+  }
+
+// for log out from application
+  void userLoginOut(context) {
+    FirebaseAuth.instance.signOut().then((value) {
+      emit(SocialLoginOutSuccessState());
+      navigateAndFinash(
+        context,
+        const LoginScreen(),
+      );
+      uId = CacheHelper.removeData(key: 'uId') as String;
+    }).catchError((error) {
+      emit(SocialLoginOutErrorState());
+      print(error.toString());
+    });
   }
 
   // to choose image for profile
@@ -343,5 +380,71 @@ class SocialCubit extends Cubit<SocialStates> {
         emit(SocialGetAllUsersErrorState(error.toString()));
       });
     }
+  }
+
+  // to send message
+  void sendMessage({
+    required String receiverId,
+    required String dateTime,
+    required String text,
+  }) {
+    MessageModel model = MessageModel(
+      senderId: userModel!.uid,
+      receiverId: receiverId,
+      dateTime: dateTime,
+      text: text,
+    );
+
+    // send message to my
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userModel!.uid)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .add(model.toMap())
+        .then((value) {
+      emit(SocialSendMessageSuccessState());
+    }).catchError((error) {
+      emit(SocialSendMessageErrorState());
+    });
+
+    // send message to other
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(receiverId)
+        .collection('chats')
+        .doc(userModel!.uid)
+        .collection('messages')
+        .add(model.toMap())
+        .then((value) {
+      emit(SocialSendMessageSuccessState());
+    }).catchError((error) {
+      emit(SocialSendMessageErrorState());
+    });
+  }
+
+  // to get message
+  List<MessageModel> messages = [];
+  void getMessage({
+    required String receiverId,
+  }) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userModel!.uid)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .orderBy('dateTime')
+        .snapshots()
+        .listen((event) {
+      messages = [];
+      event.docs.forEach((element) {
+        messages.add(
+          MessageModel.fromJson(element.data()),
+        );
+      });
+      emit(SocialGetMessageSuccessState());
+    });
   }
 }

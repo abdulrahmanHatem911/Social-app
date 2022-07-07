@@ -75,7 +75,7 @@ class SettingsScreen extends StatelessWidget {
                     child: Text(
                       '${userModel.bio}',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
                   Padding(
@@ -93,7 +93,12 @@ class SettingsScreen extends StatelessWidget {
                                 ),
                                 Text(
                                   'Posts',
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(
+                                        color: Colors.grey.shade300,
+                                      ),
                                 ),
                               ],
                             ),
@@ -110,7 +115,12 @@ class SettingsScreen extends StatelessWidget {
                                 ),
                                 Text(
                                   'Photos',
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(
+                                        color: Colors.grey.shade300,
+                                      ),
                                 ),
                               ],
                             ),
@@ -127,7 +137,12 @@ class SettingsScreen extends StatelessWidget {
                                 ),
                                 Text(
                                   'Followers',
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(
+                                        color: Colors.grey.shade300,
+                                      ),
                                 ),
                               ],
                             ),
@@ -144,7 +159,12 @@ class SettingsScreen extends StatelessWidget {
                                 ),
                                 Text(
                                   'Followings',
-                                  style: Theme.of(context).textTheme.caption,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(
+                                        color: Colors.grey.shade300,
+                                      ),
                                 ),
                               ],
                             ),

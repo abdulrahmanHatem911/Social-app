@@ -74,14 +74,11 @@ class ChatsScreen extends StatelessWidget {
               children: [
                 Text(
                   '${model.name}',
-                  style: const TextStyle(height: 1.4, fontSize: 16.0),
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
                 Text(
                   '2022-2-9',
-                  style: Theme.of(context)
-                      .textTheme
-                      .caption!
-                      .copyWith(height: 1.5),
+                  style: Theme.of(context).textTheme.subtitle2,
                 ),
               ],
             ),

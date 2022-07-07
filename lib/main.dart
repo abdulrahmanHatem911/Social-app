@@ -14,6 +14,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CacheHelper.inIt();
   await Firebase.initializeApp();
+
+  // for theme
+
+  bool? isDark = CacheHelper.getData(key: 'isDark');
   Widget widget;
   uId = CacheHelper.getData(key: 'uId');
 
@@ -24,14 +28,17 @@ void main() async {
   }
   runApp(MyApp(
     startWidget: widget,
+    isDark: isDark,
   ));
 }
 
 class MyApp extends StatelessWidget {
   // for screen
   final Widget startWidget;
+  final bool? isDark;
   MyApp({
     required this.startWidget,
+    required this.isDark,
   });
 
   @override
@@ -49,12 +56,13 @@ class MyApp extends StatelessWidget {
       child: BlocConsumer<SocialCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) {
+          var cubit = SocialCubit.get(context);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: lightTheme,
             darkTheme: darkTheme,
-            themeMode: ThemeMode.light,
+            themeMode: cubit.isDark! ? ThemeMode.dark : ThemeMode.light,
             home: startWidget,
           );
         },
